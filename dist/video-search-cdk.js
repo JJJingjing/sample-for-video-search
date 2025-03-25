@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("source-map-support/register");
+const cdk = require("aws-cdk-lib");
+const video_search_stack_1 = require("./video-search-stack");
+const process = require("process");
+const app = new cdk.App();
+// 获取命令行参数中的区域
+// CDK_DEPLOY_REGION 环境变量会被 --region 参数设置
+const region = process.env.CDK_DEPLOY_REGION || 'us-west-2';
+console.log(`Using region from command line: ${region}`);
+// 使用包含区域的堆栈名称，避免跨区域冲突
+const stackName = `VideoSearchStack-${region.replace(/-/g, '')}`;
+// 创建单一堆栈包含所有资源
+new video_search_stack_1.VideoSearchStack(app, stackName, {
+    env: {
+        account: process.env.CDK_DEFAULT_ACCOUNT,
+        region: region
+    },
+    description: `Video Search application deployed in ${region}`,
+});
+// 输出当前使用的区域和堆栈名称，便于调试
+console.log(`Deploying stack ${stackName} to region: ${region}`);
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidmlkZW8tc2VhcmNoLWNkay5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3ZpZGVvLXNlYXJjaC1jZGsudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7O0FBQ0EsdUNBQXFDO0FBQ3JDLG1DQUFtQztBQUNuQyw2REFBd0Q7QUFDeEQsbUNBQW1DO0FBRW5DLE1BQU0sR0FBRyxHQUFHLElBQUksR0FBRyxDQUFDLEdBQUcsRUFBRSxDQUFDO0FBRTFCLGNBQWM7QUFDZCx5Q0FBeUM7QUFDekMsTUFBTSxNQUFNLEdBQUcsT0FBTyxDQUFDLEdBQUcsQ0FBQyxpQkFBaUIsSUFBSSxXQUFXLENBQUM7QUFDNUQsT0FBTyxDQUFDLEdBQUcsQ0FBQyxtQ0FBbUMsTUFBTSxFQUFFLENBQUMsQ0FBQztBQUV6RCxzQkFBc0I7QUFDdEIsTUFBTSxTQUFTLEdBQUcsb0JBQW9CLE1BQU0sQ0FBQyxPQUFPLENBQUMsSUFBSSxFQUFFLEVBQUUsQ0FBQyxFQUFFLENBQUM7QUFFakUsZUFBZTtBQUNmLElBQUkscUNBQWdCLENBQUMsR0FBRyxFQUFFLFNBQVMsRUFBRTtJQUNuQyxHQUFHLEVBQUU7UUFDSCxPQUFPLEVBQUUsT0FBTyxDQUFDLEdBQUcsQ0FBQyxtQkFBbUI7UUFDeEMsTUFBTSxFQUFFLE1BQU07S0FDZjtJQUNELFdBQVcsRUFBRSx3Q0FBd0MsTUFBTSxFQUFFO0NBQzlELENBQUMsQ0FBQztBQUVILHNCQUFzQjtBQUN0QixPQUFPLENBQUMsR0FBRyxDQUFDLG1CQUFtQixTQUFTLGVBQWUsTUFBTSxFQUFFLENBQUMsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIiMhL3Vzci9iaW4vZW52IG5vZGVcbmltcG9ydCAnc291cmNlLW1hcC1zdXBwb3J0L3JlZ2lzdGVyJztcbmltcG9ydCAqIGFzIGNkayBmcm9tICdhd3MtY2RrLWxpYic7XG5pbXBvcnQgeyBWaWRlb1NlYXJjaFN0YWNrIH0gZnJvbSAnLi92aWRlby1zZWFyY2gtc3RhY2snO1xuaW1wb3J0ICogYXMgcHJvY2VzcyBmcm9tICdwcm9jZXNzJztcblxuY29uc3QgYXBwID0gbmV3IGNkay5BcHAoKTtcblxuLy8g6I635Y+W5ZG95Luk6KGM5Y+C5pWw5Lit55qE5Yy65Z+fXG4vLyBDREtfREVQTE9ZX1JFR0lPTiDnjq/looPlj5jph4/kvJrooqsgLS1yZWdpb24g5Y+C5pWw6K6+572uXG5jb25zdCByZWdpb24gPSBwcm9jZXNzLmVudi5DREtfREVQTE9ZX1JFR0lPTiB8fCAndXMtd2VzdC0yJztcbmNvbnNvbGUubG9nKGBVc2luZyByZWdpb24gZnJvbSBjb21tYW5kIGxpbmU6ICR7cmVnaW9ufWApO1xuXG4vLyDkvb/nlKjljIXlkKvljLrln5/nmoTloIbmoIjlkI3np7DvvIzpgb/lhY3ot6jljLrln5/lhrLnqoFcbmNvbnN0IHN0YWNrTmFtZSA9IGBWaWRlb1NlYXJjaFN0YWNrLSR7cmVnaW9uLnJlcGxhY2UoLy0vZywgJycpfWA7XG5cbi8vIOWIm+W7uuWNleS4gOWghuagiOWMheWQq+aJgOaciei1hOa6kFxubmV3IFZpZGVvU2VhcmNoU3RhY2soYXBwLCBzdGFja05hbWUsIHtcbiAgZW52OiB7IFxuICAgIGFjY291bnQ6IHByb2Nlc3MuZW52LkNES19ERUZBVUxUX0FDQ09VTlQsIFxuICAgIHJlZ2lvbjogcmVnaW9uIFxuICB9LFxuICBkZXNjcmlwdGlvbjogYFZpZGVvIFNlYXJjaCBhcHBsaWNhdGlvbiBkZXBsb3llZCBpbiAke3JlZ2lvbn1gLFxufSk7XG5cbi8vIOi+k+WHuuW9k+WJjeS9v+eUqOeahOWMuuWfn+WSjOWghuagiOWQjeensO+8jOS+v+S6juiwg+ivlVxuY29uc29sZS5sb2coYERlcGxveWluZyBzdGFjayAke3N0YWNrTmFtZX0gdG8gcmVnaW9uOiAke3JlZ2lvbn1gKTtcbiJdfQ==

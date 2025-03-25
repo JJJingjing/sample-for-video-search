@@ -1,0 +1,10 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[remote "origin"]
+	url = https://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@github.com/JJJingjing/VideoSearchStack123.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
