@@ -1,0 +1,623 @@
+{
+  "version": "34.0.0",
+  "artifacts": {
+    "VideoSearchStack-uswest2.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "VideoSearchStack-uswest2.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "VideoSearchStack-uswest2": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://396913724635/us-west-2",
+      "properties": {
+        "templateFile": "VideoSearchStack-uswest2.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::396913724635:role/cdk-hnb659fds-deploy-role-396913724635-us-west-2",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::396913724635:role/cdk-hnb659fds-cfn-exec-role-396913724635-us-west-2",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-396913724635-us-west-2/ce1cc4481a8d2bfdba76f5cbc9f9f39976795b1d912cc8f08a22d5869960b07d.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "VideoSearchStack-uswest2.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::396913724635:role/cdk-hnb659fds-lookup-role-396913724635-us-west-2",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "VideoSearchStack-uswest2.assets"
+      ],
+      "metadata": {
+        "/VideoSearchStack-uswest2/VideoSearchVPC/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPC4D959582"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/publicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCpublicSubnet1SubnetDBC39DD7"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/publicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCpublicSubnet1RouteTable55EAEF88"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/publicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCpublicSubnet1RouteTableAssociation8186A827"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/publicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCpublicSubnet1DefaultRoute1E01FE62"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/publicSubnet1/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCpublicSubnet1EIP5D250DCB"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/publicSubnet1/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCpublicSubnet1NATGateway4B1F590E"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/publicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCpublicSubnet2SubnetF8DA52F4"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/publicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCpublicSubnet2RouteTableD49A705F"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/publicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCpublicSubnet2RouteTableAssociation74A0F952"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/publicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCpublicSubnet2DefaultRoute6E61BD44"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/privateSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCprivateSubnet1Subnet5F479BC4"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/privateSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCprivateSubnet1RouteTableFCDFEE30"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/privateSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCprivateSubnet1RouteTableAssociation7B35B3EE"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/privateSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCprivateSubnet1DefaultRoute67A97842"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/privateSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCprivateSubnet2Subnet9E34012A"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/privateSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCprivateSubnet2RouteTable175DE6E3"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/privateSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCprivateSubnet2RouteTableAssociation9B77301E"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/privateSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCprivateSubnet2DefaultRoute6F577B58"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCIGWAD58DA19"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCVPCGWE6FB1511"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchVPC/RestrictDefaultSecurityGroupCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchVPCRestrictDefaultSecurityGroupCustomResourceF4D765E2"
+          }
+        ],
+        "/VideoSearchStack-uswest2/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+          }
+        ],
+        "/VideoSearchStack-uswest2/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E"
+          }
+        ],
+        "/VideoSearchStack-uswest2/UnifiedBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnifiedBucket6D2F2B07"
+          }
+        ],
+        "/VideoSearchStack-uswest2/UnifiedBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnifiedBucketPolicy1742B947"
+          }
+        ],
+        "/VideoSearchStack-uswest2/UnifiedBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnifiedBucketAutoDeleteObjectsCustomResourceB25AB732"
+          }
+        ],
+        "/VideoSearchStack-uswest2/UnifiedBucket/Notifications/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnifiedBucketNotifications6699DB8D"
+          }
+        ],
+        "/VideoSearchStack-uswest2/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/VideoSearchStack-uswest2/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/VideoSearchStack-uswest2/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+          }
+        ],
+        "/VideoSearchStack-uswest2/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36"
+          }
+        ],
+        "/VideoSearchStack-uswest2/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691"
+          }
+        ],
+        "/VideoSearchStack-uswest2/CloudFrontOAI/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CloudFrontOAI9EBF49FD"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchApi5765AE97"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchApiDeploymentD7B844E381bab745adae671ec3b0eaa3b765647c"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchApiDeploymentStageprodF55F1597"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchApiEndpoint20082B77"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchApi/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchApiOPTIONS9270A71F"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchApi/Default/search/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchApisearch914F80DE"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchApi/Default/search/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchApisearchOPTIONSEEC72E4B"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchApi/Default/search/POST/ApiPermission.VideoSearchStackuswest2VideoSearchApiFDF50E4A.POST..search": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchApisearchPOSTApiPermissionVideoSearchStackuswest2VideoSearchApiFDF50E4APOSTsearchBBC21FB4"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchApi/Default/search/POST/ApiPermission.Test.VideoSearchStackuswest2VideoSearchApiFDF50E4A.POST..search": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchApisearchPOSTApiPermissionTestVideoSearchStackuswest2VideoSearchApiFDF50E4APOSTsearch4CFD8064"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchApi/Default/search/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchApisearchPOST982C7870"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoInputCorsPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoInputCorsPolicyB13C5E8F"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoOutputCorsPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoOutputCorsPolicyDF2325DA"
+          }
+        ],
+        "/VideoSearchStack-uswest2/FrontendDistribution/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FrontendDistributionE6EAF405"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoDataCluster/Subnets": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoDataClusterSubnetsC2901E96"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoDataCluster/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoDataClusterSecurityGroup46B8CE36"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoDataCluster/SecurityGroup/from VideoSearchStackuswest2LambdaSecurityGroupF86A90F7:27017": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoDataClusterSecurityGroupfromVideoSearchStackuswest2LambdaSecurityGroupF86A90F727017109E3211"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoDataCluster/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoDataCluster21C22DC5"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoDataCluster/Instance1": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoDataClusterInstance1D76F76F5"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoDataClusterParams": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoDataClusterParams"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchLambdaRole364B22E0"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoSearchLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoSearchLambdaRoleDefaultPolicy21938B05"
+          }
+        ],
+        "/VideoSearchStack-uswest2/LambdaSecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaSecurityGroup0BD9FC99"
+          }
+        ],
+        "/VideoSearchStack-uswest2/PythonDependenciesLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PythonDependenciesLayerE0D42248"
+          }
+        ],
+        "/VideoSearchStack-uswest2/SearchVideoFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SearchVideoFunction94253CC5"
+          }
+        ],
+        "/VideoSearchStack-uswest2/ExtractVideoDataFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExtractVideoDataFunction0C66DF26"
+          }
+        ],
+        "/VideoSearchStack-uswest2/CreateBDAProjectFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateBDAProjectFunctionDCAE43D8"
+          }
+        ],
+        "/VideoSearchStack-uswest2/BDAProjectProvider/framework-onEvent/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BDAProjectProviderframeworkonEventServiceRole1DC9429D"
+          }
+        ],
+        "/VideoSearchStack-uswest2/BDAProjectProvider/framework-onEvent/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BDAProjectProviderframeworkonEventServiceRoleDefaultPolicyA0853361"
+          }
+        ],
+        "/VideoSearchStack-uswest2/BDAProjectProvider/framework-onEvent/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BDAProjectProviderframeworkonEventE9BF32C3"
+          }
+        ],
+        "/VideoSearchStack-uswest2/BDAProject/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BDAProject"
+          }
+        ],
+        "/VideoSearchStack-uswest2/TriggerVideoDataAutomationFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TriggerVideoDataAutomationFunctionEF8A166B"
+          }
+        ],
+        "/VideoSearchStack-uswest2/InitDbFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "InitDbFunction67777D6B"
+          }
+        ],
+        "/VideoSearchStack-uswest2/DbInitializerProvider/framework-onEvent/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DbInitializerProviderframeworkonEventServiceRole88DDED68"
+          }
+        ],
+        "/VideoSearchStack-uswest2/DbInitializerProvider/framework-onEvent/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DbInitializerProviderframeworkonEventServiceRoleDefaultPolicy5A937A68"
+          }
+        ],
+        "/VideoSearchStack-uswest2/DbInitializerProvider/framework-onEvent/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DbInitializerProviderframeworkonEvent13A4E169"
+          }
+        ],
+        "/VideoSearchStack-uswest2/DbInitializer/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DbInitializer"
+          }
+        ],
+        "/VideoSearchStack-uswest2/DeployFrontendStatic/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployFrontendStaticAwsCliLayerB3ECAD50"
+          }
+        ],
+        "/VideoSearchStack-uswest2/DeployFrontendStatic/CustomResource-1024MiB-2048MiB/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployFrontendStaticCustomResource1024MiB2048MiB75C70504"
+          }
+        ],
+        "/VideoSearchStack-uswest2/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiB2048MiB/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiB2048MiBServiceRole3D247CAC"
+          }
+        ],
+        "/VideoSearchStack-uswest2/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiB2048MiB/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiB2048MiBServiceRoleDefaultPolicy0E2BB108"
+          }
+        ],
+        "/VideoSearchStack-uswest2/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiB2048MiB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiB2048MiB98A3C176"
+          }
+        ],
+        "/VideoSearchStack-uswest2/DeployFrontendConfig/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployFrontendConfigAwsCliLayerD1D43F42"
+          }
+        ],
+        "/VideoSearchStack-uswest2/DeployFrontendConfig/CustomResource-512MiB-1024MiB/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployFrontendConfigCustomResource512MiB1024MiBF184EE04"
+          }
+        ],
+        "/VideoSearchStack-uswest2/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C512MiB1024MiB/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C512MiB1024MiBServiceRole5F7A526E"
+          }
+        ],
+        "/VideoSearchStack-uswest2/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C512MiB1024MiB/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C512MiB1024MiBServiceRoleDefaultPolicy5878A191"
+          }
+        ],
+        "/VideoSearchStack-uswest2/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C512MiB1024MiB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C512MiB1024MiB439D638D"
+          }
+        ],
+        "/VideoSearchStack-uswest2/CreateVideoFolders/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateVideoFoldersAwsCliLayer520C670B"
+          }
+        ],
+        "/VideoSearchStack-uswest2/CreateVideoFolders/CustomResource-512MiB-1024MiB/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateVideoFoldersCustomResource512MiB1024MiB187B3A58"
+          }
+        ],
+        "/VideoSearchStack-uswest2/CreateVideoOutputFolder/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateVideoOutputFolderAwsCliLayerE6D19E20"
+          }
+        ],
+        "/VideoSearchStack-uswest2/CreateVideoOutputFolder/CustomResource-512MiB-1024MiB/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateVideoOutputFolderCustomResource512MiB1024MiB873C6E54"
+          }
+        ],
+        "/VideoSearchStack-uswest2/FrontendURL": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FrontendURL"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoUploadRule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoUploadRule4AF2BB35"
+          }
+        ],
+        "/VideoSearchStack-uswest2/VideoUploadRule/AllowEventRuleVideoSearchStackuswest2TriggerVideoDataAutomationFunctionFF146190": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VideoUploadRuleAllowEventRuleVideoSearchStackuswest2TriggerVideoDataAutomationFunctionFF14619020D6F2E5"
+          }
+        ],
+        "/VideoSearchStack-uswest2/S3VideoDataExtractRule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "S3VideoDataExtractRuleE929C67C"
+          }
+        ],
+        "/VideoSearchStack-uswest2/S3VideoDataExtractRule/AllowEventRuleVideoSearchStackuswest2ExtractVideoDataFunction647AA94D": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "S3VideoDataExtractRuleAllowEventRuleVideoSearchStackuswest2ExtractVideoDataFunction647AA94D28DBE81E"
+          }
+        ],
+        "/VideoSearchStack-uswest2/UnifiedBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnifiedBucketName"
+          }
+        ],
+        "/VideoSearchStack-uswest2/CloudFrontURL": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CloudFrontURL"
+          }
+        ],
+        "/VideoSearchStack-uswest2/DocumentDBEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DocumentDBEndpoint"
+          }
+        ],
+        "/VideoSearchStack-uswest2/ApiEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiEndpoint"
+          }
+        ],
+        "/VideoSearchStack-uswest2/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/VideoSearchStack-uswest2/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/VideoSearchStack-uswest2/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "VideoSearchStack-uswest2"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
