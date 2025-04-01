@@ -40,14 +40,34 @@
 
 ## 部署指南
 
-### 1. 克隆仓库
+### 1. 设置 Python 虚拟环境
+
+推荐使用虚拟环境来隔离项目依赖：
+
+```bash
+# 创建虚拟环境
+python -m venv .venv
+
+# 激活虚拟环境
+## Windows
+.venv\Scripts\activate
+## macOS/Linux
+source .venv/bin/activate
+
+# 验证虚拟环境
+which python  # 应显示虚拟环境中的 Python 路径
+```
+
+激活虚拟环境后，终端提示符前会出现 `(.venv)`，表示当前在虚拟环境中。所有后续的 Python 包安装都将在这个隔离的环境中进行。
+
+### 2. 克隆仓库
 
 ```bash
 git clone <repository-url>
-cd VideoSearchStack123
+cd sample-for-video-search
 ```
 
-### 2. 安装依赖
+### 3. 安装依赖
 
 ```bash
 # 安装 CDK 依赖
@@ -59,7 +79,7 @@ pip install -r requirements.txt -t python
 cd ../..
 ```
 
-### 3. 配置 AWS 环境
+### 4. 配置 AWS 环境
 
 确保您的 AWS CLI 已正确配置，并具有足够的权限：
 
@@ -67,13 +87,13 @@ cd ../..
 aws configure
 ```
 
-### 4. 引导 CDK 环境（首次使用 CDK 时）
+### 5. 引导 CDK 环境（首次使用 CDK 时）
 
 ```bash
 cdk bootstrap
 ```
 
-### 5. 部署堆栈
+### 6. 部署堆栈
 
 ```bash
 cdk deploy
@@ -86,7 +106,7 @@ cdk deploy
 - **UnifiedBucketName**: S3 存储桶名称
 - **DocumentDBEndpoint**: DocumentDB 集群端点
 
-### 6. 上传视频
+### 7. 上传视频
 
 您可以使用 AWS 控制台或 AWS CLI 将视频上传到 S3 存储桶的 `video-input` 文件夹：
 
@@ -137,15 +157,25 @@ Lambda 函数位于 `assets/lambda` 目录中：
 cdk destroy
 ```
 
+完成后，可以退出虚拟环境：
+
+```bash
+deactivate
+```
+
+如果需要完全删除虚拟环境，可以直接删除 `.venv` 目录。
+
 ## 故障排除
 
 - **前端无法连接到 API**: 检查 `config.js` 文件中的 API 端点是否正确
 - **视频无法播放**: 确认视频已上传到正确的 S3 路径，并且 CloudFront 分配已配置正确
 - **搜索无结果**: 检查 DocumentDB 连接和索引是否正确创建
 - **Lambda 函数超时**: 考虑增加 Lambda 函数的超时设置和内存分配
+- **虚拟环境问题**: 如果遇到 Python 包冲突或版本问题，尝试删除并重新创建虚拟环境
 
 ## 安全注意事项
 
 - 该应用使用 DocumentDB 用户名和密码进行身份验证，生产环境中应使用 AWS Secrets Manager 管理这些凭据
 - API Gateway 配置为允许所有源，生产环境中应限制为特定域名
 - S3 存储桶配置为阻止公共访问，通过 CloudFront 提供内容
+- 虚拟环境中的依赖包应定期更新，以修复潜在的安全漏洞
