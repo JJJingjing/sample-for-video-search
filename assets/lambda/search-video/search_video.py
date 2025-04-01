@@ -14,7 +14,7 @@ class VideoSearch:
     def __init__(self):
         """Initialize the VideoSearch class with MongoDB connection and Bedrock client"""
         try:
-            # 硬编码的连接信息
+            # Hardcoded connection information
             username = 'username123'
             password = 'Password123'
             db_endpoint = os.environ.get('DB_ENDPOINT')
@@ -27,12 +27,12 @@ class VideoSearch:
 
             logger.info(f"Connecting to MongoDB...")
             
-            # 优先使用完整的 MONGODB_URI 如果提供了
+            # Use the complete MONGODB_URI if provided
             if mongodb_uri:
                 logger.info(f"Using provided MONGODB_URI")
                 connection_uri = mongodb_uri
             else:
-                # 构建 MongoDB URI
+                # Build MongoDB URI
                 connection_uri = f"mongodb://{username}:{password}@{db_endpoint}:{db_port}/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false&ssl=false"
                 logger.warning(f"Built MongoDB URI from components: mongodb://{username}:****@{db_endpoint}:{db_port}/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false&ssl=false")
             
@@ -63,26 +63,26 @@ class VideoSearch:
             raise
             
     def test_connection(self):
-        """测试与 DocumentDB 的连接并打印基本诊断信息"""
+        """Test the connection to DocumentDB and print basic diagnostic information"""
         try:
-            # 尝试连接并执行简单查询
+            # Try to connect and execute a simple query
             db_info = self.client.server_info()
             logger.warning(f"Successfully connected to MongoDB")
             
-            # 检查 VideoData 数据库
+            # Check VideoData database
             db_name = os.environ.get('DB_NAME', 'VideoData')
             collection_name = os.environ.get('COLLECTION_NAME', 'videodata')
             
-            # 计数文档
+            # Count documents
             count = self.client[db_name][collection_name].count_documents({})
             logger.warning(f"Total documents in {db_name}.{collection_name}: {count}")
             
-            # 获取索引信息
+            # Get index information
             indexes = list(self.client[db_name][collection_name].list_indexes())
             index_names = [idx.get('name') for idx in indexes]
             logger.warning(f"Indexes in collection: {index_names}")
             
-            # 检查是否有文本索引和向量索引
+            # Check if there are text and vector indexes
             has_text_index = any('text' in str(idx.get('key', {})) for idx in indexes)
             has_vector_index = any('vector' in str(idx.get('key', {})) for idx in indexes)
             
@@ -96,12 +96,12 @@ class VideoSearch:
             else:
                 logger.warning("No vector index found in collection")
             
-            # 尝试获取一个示例文档
+            # Try to get a sample document
             sample = self.client[db_name][collection_name].find_one()
             if sample:
                 logger.warning(f"Successfully retrieved a sample document")
                 
-                # 检查是否有 embedding 字段
+                # Check if there is an embedding field
                 if 'embedding' in sample:
                     logger.warning(f"Document has 'embedding' field")
                 else:
@@ -169,11 +169,11 @@ class VideoSearch:
             else:
                 raise ValueError(f"Invalid search mode: {search_mode}")
 
-            # 检查是否有匹配的文档
+            # Check if there are matching documents
             matching_count = self.collection.count_documents(filter_condition)
             logger.info(f"Found {matching_count} documents matching the filter condition")
 
-            # 检查是否有包含查询词的文档
+            # Check if there are documents containing the query term
             text_query = {"text": {"$regex": query_text, "$options": "i"}}
             combined_query = {**text_query, **filter_condition}
             text_matching_count = self.collection.count_documents(combined_query)
@@ -215,7 +215,7 @@ class VideoSearch:
             results = list(self.collection.aggregate(pipeline))
             logger.warning(f"Vector search completed with {len(results)} results")
             
-            # 如果没有结果，尝试获取一些示例文档
+            # If no results, try to get some sample documents
             if len(results) == 0:
                 sample_docs = list(self.collection.find(filter_condition).limit(2))
                 for doc in sample_docs:

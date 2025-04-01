@@ -35,6 +35,8 @@ cdk.Aspects.of(app).add(new AwsSolutionsChecks({ verbose: true }));
 NagSuppressions.addStackSuppressions(stack, [
   { id: 'AwsSolutions-IAM4', reason: '使用 AWS 托管策略是此用例的合理选择，这是一个演示项目' },
   { id: 'AwsSolutions-IAM5', reason: '这是一个演示项目，在生产环境中会更严格限制权限' },
+  // VPC相关规则抑制
+  { id: 'AwsSolutions-VPC7', reason: '这是一个演示项目，在生产环境中会启用VPC流日志' },
   // DocumentDB相关规则抑制
   { id: 'AwsSolutions-DOC2', reason: '这是一个演示项目，在生产环境中会使用非默认端口' },
   { id: 'AwsSolutions-DOC3', reason: '这是一个演示项目，在生产环境中会使用Secrets Manager存储凭据' },
@@ -44,14 +46,27 @@ NagSuppressions.addStackSuppressions(stack, [
   { id: 'AwsSolutions-S1', reason: '这是一个演示项目，在生产环境中会启用服务器访问日志' },
   { id: 'AwsSolutions-S10', reason: '这是一个演示项目，在生产环境中会要求使用SSL连接' },
   // API Gateway相关规则抑制
+  { id: 'AwsSolutions-APIG1', reason: '这是一个演示项目，在生产环境中会启用API访问日志' },
   { id: 'AwsSolutions-APIG2', reason: '这是一个演示项目，在生产环境中会启用请求验证' },
   { id: 'AwsSolutions-APIG3', reason: '这是一个演示项目，在生产环境中会关联WAF' },
   { id: 'AwsSolutions-APIG4', reason: '这是一个演示项目，在生产环境中会实现授权' },
-  { id: 'AwsSolutions-COG4', reason: '这是一个演示项目，在生产环境中会使用Cognito用户池授权器' }
+  { id: 'AwsSolutions-COG4', reason: '这是一个演示项目，在生产环境中会使用Cognito用户池授权器' },
+  // CloudFront相关规则抑制
+  { id: 'AwsSolutions-CFR1', reason: '这是一个演示项目，在生产环境中会根据业务需求添加地理限制' },
+  { id: 'AwsSolutions-CFR2', reason: '这是一个演示项目，在生产环境中会与AWS WAF集成' },
+  { id: 'AwsSolutions-CFR3', reason: '这是一个演示项目，在生产环境中会启用CloudFront访问日志' },
+  { id: 'AwsSolutions-CFR4', reason: '这是一个演示项目，在生产环境中会使用更安全的TLS版本' }
+  // 注意：我们已经修复了 AwsSolutions-CFR7，所以不需要抑制它
 ]);
 
 // 为特定资源添加抑制规则
 NagSuppressions.addResourceSuppressions(stack, [
+  // VPC资源抑制
+  {
+    id: 'AwsSolutions-VPC7',
+    reason: '这是一个演示项目，在生产环境中会启用VPC流日志',
+    appliesTo: ['Resource::VideoSearchVPC']
+  },
   // DocumentDB资源抑制
   {
     id: 'AwsSolutions-DOC2',
@@ -87,7 +102,55 @@ NagSuppressions.addResourceSuppressions(stack, [
     id: 'AwsSolutions-S10',
     reason: '这是一个演示项目，在生产环境中会要求使用SSL连接',
     appliesTo: ['Resource::UnifiedBucket', 'Resource::UnifiedBucket/Policy/Resource']
+  },
+  // API Gateway资源抑制
+  {
+    id: 'AwsSolutions-APIG1',
+    reason: '这是一个演示项目，在生产环境中会启用API访问日志',
+    appliesTo: ['Resource::VideoSearchApi/DeploymentStage.prod/Resource']
+  },
+  {
+    id: 'AwsSolutions-APIG2',
+    reason: '这是一个演示项目，在生产环境中会启用请求验证',
+    appliesTo: ['Resource::VideoSearchApi/Resource']
+  },
+  {
+    id: 'AwsSolutions-APIG3',
+    reason: '这是一个演示项目，在生产环境中会关联WAF',
+    appliesTo: ['Resource::VideoSearchApi/DeploymentStage.prod/Resource']
+  },
+  {
+    id: 'AwsSolutions-APIG4',
+    reason: '这是一个演示项目，在生产环境中会实现授权',
+    appliesTo: ['Resource::VideoSearchApi/Default/search/POST/Resource']
+  },
+  {
+    id: 'AwsSolutions-COG4',
+    reason: '这是一个演示项目，在生产环境中会使用Cognito用户池授权器',
+    appliesTo: ['Resource::VideoSearchApi/Default/search/POST/Resource']
+  },
+  // CloudFront资源抑制
+  {
+    id: 'AwsSolutions-CFR1',
+    reason: '这是一个演示项目，在生产环境中会根据业务需求添加地理限制',
+    appliesTo: ['Resource::FrontendDistribution']
+  },
+  {
+    id: 'AwsSolutions-CFR2',
+    reason: '这是一个演示项目，在生产环境中会与AWS WAF集成',
+    appliesTo: ['Resource::FrontendDistribution']
+  },
+  {
+    id: 'AwsSolutions-CFR3',
+    reason: '这是一个演示项目，在生产环境中会启用CloudFront访问日志',
+    appliesTo: ['Resource::FrontendDistribution']
+  },
+  {
+    id: 'AwsSolutions-CFR4',
+    reason: '这是一个演示项目，在生产环境中会使用更安全的TLS版本',
+    appliesTo: ['Resource::FrontendDistribution']
   }
+  // 注意：我们已经修复了 AwsSolutions-CFR7，所以不需要抑制它
 ], true);
 
 // 输出当前使用的区域和堆栈名称，便于调试

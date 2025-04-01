@@ -22,7 +22,7 @@ export class VideoSearchStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // 创建VPC
+    // Create VPC
     const vpc = new ec2.Vpc(this, 'VideoSearchVPC', {
       maxAzs: 2,
       natGateways: 1,
@@ -40,12 +40,12 @@ export class VideoSearchStack extends cdk.Stack {
       ]
     });
 
-    // 创建单个S3存储桶，用于视频输入、输出和前端托管
+    // Create a single S3 bucket for video input, output, and frontend hosting
     const unifiedBucket = new s3.Bucket(this, 'UnifiedBucket', {
       versioned: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
-      eventBridgeEnabled: true, // 启用 EventBridge 通知
+      eventBridgeEnabled: true, // Enable EventBridge notifications
       cors: [
         {
           allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.PUT, s3.HttpMethods.POST],
@@ -58,21 +58,13 @@ export class VideoSearchStack extends cdk.Stack {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
     });
     
-    // 创建 CloudFront Origin Access Identity
-    const originAccessIdentity = new cloudfront.OriginAccessIdentity(this, 'CloudFrontOAI', {
-      comment: 'OAI for video search frontend'
-    });
-    
-    // 授予 OAI 访问 S3 存储桶的权限
-    unifiedBucket.grantRead(originAccessIdentity);
-
-    // 创建CloudWatch日志组用于API Gateway访问日志
+    // Create CloudWatch log group for API Gateway access logs
     const apiLogGroup = new cdk.aws_logs.LogGroup(this, 'ApiGatewayAccessLogs', {
       retention: cdk.aws_logs.RetentionDays.ONE_WEEK,
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-    // 创建API Gateway
+    // Create API Gateway
     const api = new apigateway.RestApi(this, 'VideoSearchApi', {
       restApiName: 'Video Search API',
       description: 'API for searching video content',
@@ -87,7 +79,7 @@ export class VideoSearchStack extends cdk.Stack {
         stageName: 'prod',
         loggingLevel: apigateway.MethodLoggingLevel.INFO,
         dataTraceEnabled: true,
-        // 添加访问日志配置
+        // Add access log configuration
         accessLogDestination: new apigateway.LogGroupLogDestination(apiLogGroup),
         accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields({
           caller: true,
@@ -103,13 +95,13 @@ export class VideoSearchStack extends cdk.Stack {
       },
     });
 
-    // 创建API Gateway的CloudFront源
+    // Create CloudFront origin for API Gateway
     const apiOrigin = new origins.HttpOrigin(`${api.restApiId}.execute-api.${this.region}.amazonaws.com`, {
       originPath: '/prod',
       protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
     });
 
-    // 创建CloudWatch日志组用于CloudFront访问日志
+    // Create CloudWatch log group for CloudFront access logs
     const cloudFrontLogBucket = new s3.Bucket(this, 'CloudFrontLogsBucket', {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       encryption: s3.BucketEncryption.S3_MANAGED,
@@ -118,31 +110,40 @@ export class VideoSearchStack extends cdk.Stack {
       autoDeleteObjects: true,
       lifecycleRules: [
         {
-          expiration: cdk.Duration.days(90), // 保留日志90天
+          expiration: cdk.Duration.days(90), // Retain logs for 90 days
         }
       ]
     });
 
-    // 创建CloudFront分发
+    // Create Origin Access Control
+    const oac = new cloudfront.CfnOriginAccessControl(this, 'CloudFrontOAC', {
+      originAccessControlConfig: {
+        name: 'CloudFrontOAC',
+        originAccessControlOriginType: 's3',
+        signingBehavior: 'always',
+        signingProtocol: 'sigv4'
+      }
+    });
+
+    // Create CloudFront distribution
     const distribution = new cloudfront.Distribution(this, 'FrontendDistribution', {
       defaultBehavior: {
         origin: new origins.S3Origin(unifiedBucket, {
-          originPath: '/frontend', // 指定前端文件的路径前缀
-          originAccessIdentity: originAccessIdentity
+          originPath: '/frontend', // Specify frontend files path prefix
         }),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
       },
-      // 启用访问日志
+      // Enable access logs
       enableLogging: true,
       logBucket: cloudFrontLogBucket,
       logFilePrefix: 'cloudfront-logs/',
-      // 添加额外的行为，用于访问视频文件
+      // Add additional behaviors for accessing video files
       additionalBehaviors: {
         'video-input/*': {
           origin: new origins.S3Origin(unifiedBucket, {
-            originAccessIdentity: originAccessIdentity
+            // 移除 originAccessIdentity
           }),
           viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
@@ -160,7 +161,7 @@ export class VideoSearchStack extends cdk.Stack {
         },
         'video-output/*': {
           origin: new origins.S3Origin(unifiedBucket, {
-            originAccessIdentity: originAccessIdentity
+            // 移除 originAccessIdentity
           }),
           viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
@@ -176,13 +177,13 @@ export class VideoSearchStack extends cdk.Stack {
             }
           }),
         },
-        // 添加API行为，允许所有HTTP方法并禁用缓存
+        // Add API behavior, allow all HTTP methods and disable caching
         'api/*': {
           origin: apiOrigin,
           viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL, // 允许所有HTTP方法，包括POST
-          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED, // 禁用缓存
-          originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER, // 转发所有请求头和查询字符串
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL, // Allow all HTTP methods, including POST
+          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED, // Disable caching
+          originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER, // Forward all request headers and query strings
         },
       },
       defaultRootObject: 'index.html',
@@ -195,40 +196,73 @@ export class VideoSearchStack extends cdk.Stack {
       ],
     });
 
-    // 创建DocumentDB集群
+    // Get underlying CloudFront resource
+    const cfnDistribution = distribution.node.defaultChild as cloudfront.CfnDistribution;
+
+    // Modify S3 origin configuration to use OAC
+    cfnDistribution.addPropertyOverride('DistributionConfig.Origins.0.S3OriginConfig.OriginAccessIdentity', '');
+    cfnDistribution.addPropertyOverride('DistributionConfig.Origins.0.OriginAccessControlId', oac.getAtt('Id'));
+    
+    // Modify additional behaviors' S3 origin configuration to use OAC
+    cfnDistribution.addPropertyOverride('DistributionConfig.Origins.1.S3OriginConfig.OriginAccessIdentity', '');
+    cfnDistribution.addPropertyOverride('DistributionConfig.Origins.1.OriginAccessControlId', oac.getAtt('Id'));
+    cfnDistribution.addPropertyOverride('DistributionConfig.Origins.2.S3OriginConfig.OriginAccessIdentity', '');
+    cfnDistribution.addPropertyOverride('DistributionConfig.Origins.2.OriginAccessControlId', oac.getAtt('Id'));
+
+    // Create policy to allow CloudFront to access S3
+    const bucketPolicy = new iam.PolicyStatement({
+      actions: ['s3:GetObject'],
+      effect: iam.Effect.ALLOW,
+      principals: [new iam.ServicePrincipal('cloudfront.amazonaws.com')],
+      resources: [
+        `${unifiedBucket.bucketArn}/frontend/*`,
+        `${unifiedBucket.bucketArn}/video-input/*`,
+        `${unifiedBucket.bucketArn}/video-output/*`
+      ],
+      conditions: {
+        StringEquals: {
+          'AWS:SourceArn': `arn:aws:cloudfront::${this.account}:distribution/${distribution.distributionId}`
+        }
+      }
+    });
+
+    // Add policy to the bucket
+    unifiedBucket.addToResourcePolicy(bucketPolicy);
+
+    // Create DocumentDB cluster
     const docdbCluster = new docdb.DatabaseCluster(this, 'VideoDataCluster', {
       masterUser: {
         username: 'username123',
         password: cdk.SecretValue.unsafePlainText('Password123'),
       },
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
-      instances: 1, // 减少实例数量以加快初始化
+      instances: 1, // Reduce instance count to speed up initialization
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
       vpc: vpc,
-      deletionProtection: false, // 修改为false以便于测试环境中删除
+      deletionProtection: false, // Set to false for easier deletion in test environments
       engineVersion: '5.0.0',
-      removalPolicy: cdk.RemovalPolicy.DESTROY, // 修改为DESTROY以便于测试环境中删除
+      removalPolicy: cdk.RemovalPolicy.DESTROY, // Set to DESTROY for easier deletion in test environments
     });
     
-    // 创建参数组并应用到集群
+    // Create parameter group and apply to cluster
     const clusterParameterGroup = new docdb.CfnDBClusterParameterGroup(this, 'VideoDataClusterParams', {
       family: 'docdb5.0',
       description: 'Custom parameter group for Video Search application',
       parameters: {
-        'tls': 'disabled'  // 禁用 TLS 要求
+        'tls': 'disabled'  // Disable TLS requirement
       }
     });
     
-    // 获取底层的 CfnDBCluster 资源
+    // Get underlying CfnDBCluster resource
     const cfnCluster = docdbCluster.node.defaultChild as docdb.CfnDBCluster;
     
-    // 设置参数组和日志导出
+    // Set parameter group and log exports
     cfnCluster.dbClusterParameterGroupName = clusterParameterGroup.ref;
     cfnCluster.enableCloudwatchLogsExports = ['audit', 'profiler'];
 
-    // 创建Lambda执行角色
+    // Create Lambda execution role
     const lambdaRole = new iam.Role(this, 'VideoSearchLambdaRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
@@ -237,7 +271,7 @@ export class VideoSearchStack extends cdk.Stack {
       ],
     });
 
-    // 添加Bedrock权限
+    // Add Bedrock permissions
     lambdaRole.addToPolicy(new iam.PolicyStatement({
       actions: [
         'bedrock:*',
@@ -248,7 +282,7 @@ export class VideoSearchStack extends cdk.Stack {
       resources: ['*'],
     }));
     
-    // 添加更多权限
+    // Add additional permissions
     lambdaRole.addToPolicy(new iam.PolicyStatement({
       actions: [
         'secretsmanager:GetSecretValue',
@@ -262,17 +296,17 @@ export class VideoSearchStack extends cdk.Stack {
       resources: ['*'],
     }));
 
-    // 创建安全组
+    // Create security group
     const lambdaSG = new ec2.SecurityGroup(this, 'LambdaSecurityGroup', {
       vpc: vpc,
       description: 'Security group for Lambda functions',
       allowAllOutbound: true,
     });
 
-    // 允许Lambda访问DocumentDB
+    // Allow Lambda to access DocumentDB
     docdbCluster.connections.allowFrom(lambdaSG, ec2.Port.tcp(27017));
 
-    // 获取DocumentDB连接密钥
+    // Get DocumentDB connection secret
     const dbSecret = secretsmanager.Secret.fromSecretNameV2(
       this, 'DocDBSecret', '/video-search/docdb/masteruser'
     );
