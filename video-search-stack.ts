@@ -66,6 +66,12 @@ export class VideoSearchStack extends cdk.Stack {
     // 授予 OAI 访问 S3 存储桶的权限
     unifiedBucket.grantRead(originAccessIdentity);
 
+    // 创建CloudWatch日志组用于API Gateway访问日志
+    const apiLogGroup = new cdk.aws_logs.LogGroup(this, 'ApiGatewayAccessLogs', {
+      retention: cdk.aws_logs.RetentionDays.ONE_WEEK,
+      removalPolicy: cdk.RemovalPolicy.DESTROY
+    });
+
     // 创建API Gateway
     const api = new apigateway.RestApi(this, 'VideoSearchApi', {
       restApiName: 'Video Search API',
@@ -81,6 +87,19 @@ export class VideoSearchStack extends cdk.Stack {
         stageName: 'prod',
         loggingLevel: apigateway.MethodLoggingLevel.INFO,
         dataTraceEnabled: true,
+        // 添加访问日志配置
+        accessLogDestination: new apigateway.LogGroupLogDestination(apiLogGroup),
+        accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields({
+          caller: true,
+          httpMethod: true,
+          ip: true,
+          protocol: true,
+          requestTime: true,
+          resourcePath: true,
+          responseLength: true,
+          status: true,
+          user: true
+        })
       },
     });
 
@@ -88,6 +107,20 @@ export class VideoSearchStack extends cdk.Stack {
     const apiOrigin = new origins.HttpOrigin(`${api.restApiId}.execute-api.${this.region}.amazonaws.com`, {
       originPath: '/prod',
       protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+    });
+
+    // 创建CloudWatch日志组用于CloudFront访问日志
+    const cloudFrontLogBucket = new s3.Bucket(this, 'CloudFrontLogsBucket', {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+      lifecycleRules: [
+        {
+          expiration: cdk.Duration.days(90), // 保留日志90天
+        }
+      ]
     });
 
     // 创建CloudFront分发
@@ -101,6 +134,10 @@ export class VideoSearchStack extends cdk.Stack {
         allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
       },
+      // 启用访问日志
+      enableLogging: true,
+      logBucket: cloudFrontLogBucket,
+      logFilePrefix: 'cloudfront-logs/',
       // 添加额外的行为，用于访问视频文件
       additionalBehaviors: {
         'video-input/*': {
