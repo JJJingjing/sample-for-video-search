@@ -1,3 +1,7 @@
+# Language Selection / 语言选择
+- [English](#sample-for-video-search)
+- [中文](README.md)
+
 # Sample for Video Search
 
 This is a video search application built with AWS CDK, using Amazon Bedrock and DocumentDB to implement intelligent search functionality for video content. The application allows users to search video content through text descriptions or scene descriptions, and precisely locate relevant timestamps.
