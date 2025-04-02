@@ -6,20 +6,20 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { VideoSearchStack } from './video-search-stack';
 import * as process from 'process';
-// 导入 CDK-nag
+// Import CDK-nag
 import { AwsSolutionsChecks, NagSuppressions } from 'cdk-nag';
 
 const app = new cdk.App();
 
-// 获取命令行参数中的区域
-// CDK_DEPLOY_REGION 环境变量会被 --region 参数设置
+// Get region from command line arguments
+// CDK_DEPLOY_REGION environment variable is set by the --region parameter
 const region = process.env.CDK_DEPLOY_REGION || 'us-west-2';
 console.log(`Using region from command line: ${region}`);
 
-// 使用包含区域的堆栈名称，避免跨区域冲突
+// Use stack name with region to avoid cross-region conflicts
 const stackName = `VideoSearchStack-${region.replace(/-/g, '')}`;
 
-// 创建单一堆栈包含所有资源
+// Create a single stack containing all resources
 const stack = new VideoSearchStack(app, stackName, {
   env: { 
     account: process.env.CDK_DEFAULT_ACCOUNT, 
@@ -28,130 +28,130 @@ const stack = new VideoSearchStack(app, stackName, {
   description: `Video Search application deployed in ${region}`,
 });
 
-// 将 CDK-nag 检查应用到所有堆栈
+// Apply CDK-nag checks to all stacks
 cdk.Aspects.of(app).add(new AwsSolutionsChecks({ verbose: true }));
 
-// 抑制特定规则（如果有合理理由）
+// Suppress specific rules (if there are reasonable justifications)
 NagSuppressions.addStackSuppressions(stack, [
-  { id: 'AwsSolutions-IAM4', reason: '使用 AWS 托管策略是此用例的合理选择，这是一个演示项目' },
-  { id: 'AwsSolutions-IAM5', reason: '这是一个演示项目，在生产环境中会更严格限制权限' },
-  // VPC相关规则抑制
-  { id: 'AwsSolutions-VPC7', reason: '这是一个演示项目，在生产环境中会启用VPC流日志' },
-  // DocumentDB相关规则抑制
-  { id: 'AwsSolutions-DOC2', reason: '这是一个演示项目，在生产环境中会使用非默认端口' },
-  { id: 'AwsSolutions-DOC3', reason: '这是一个演示项目，在生产环境中会使用Secrets Manager存储凭据' },
-  { id: 'AwsSolutions-DOC4', reason: '这是一个演示项目，在生产环境中会配置合理的备份保留期' },
-  { id: 'AwsSolutions-DOC5', reason: '这是一个演示项目，在生产环境中会启用必要的日志导出' },
-  // S3相关规则抑制
-  { id: 'AwsSolutions-S1', reason: '这是一个演示项目，在生产环境中会启用服务器访问日志' },
-  { id: 'AwsSolutions-S10', reason: '这是一个演示项目，在生产环境中会要求使用SSL连接' },
-  // API Gateway相关规则抑制
-  { id: 'AwsSolutions-APIG1', reason: '这是一个演示项目，在生产环境中会启用API访问日志' },
-  { id: 'AwsSolutions-APIG2', reason: '这是一个演示项目，在生产环境中会启用请求验证' },
-  { id: 'AwsSolutions-APIG3', reason: '这是一个演示项目，在生产环境中会关联WAF' },
-  { id: 'AwsSolutions-APIG4', reason: '这是一个演示项目，在生产环境中会实现授权' },
-  { id: 'AwsSolutions-COG4', reason: '这是一个演示项目，在生产环境中会使用Cognito用户池授权器' },
-  // CloudFront相关规则抑制
-  { id: 'AwsSolutions-CFR1', reason: '这是一个演示项目，在生产环境中会根据业务需求添加地理限制' },
-  { id: 'AwsSolutions-CFR2', reason: '这是一个演示项目，在生产环境中会与AWS WAF集成' },
-  { id: 'AwsSolutions-CFR3', reason: '这是一个演示项目，在生产环境中会启用CloudFront访问日志' },
-  { id: 'AwsSolutions-CFR4', reason: '这是一个演示项目，在生产环境中会使用更安全的TLS版本' }
-  // 注意：我们已经修复了 AwsSolutions-CFR7，所以不需要抑制它
+  { id: 'AwsSolutions-IAM4', reason: 'Using AWS managed policies is a reasonable choice for this use case, as this is a demo project' },
+  { id: 'AwsSolutions-IAM5', reason: 'This is a demo project, permissions would be more strictly limited in a production environment' },
+  // VPC related rule suppressions
+  { id: 'AwsSolutions-VPC7', reason: 'This is a demo project, VPC flow logs would be enabled in a production environment' },
+  // DocumentDB related rule suppressions
+  { id: 'AwsSolutions-DOC2', reason: 'This is a demo project, non-default ports would be used in a production environment' },
+  { id: 'AwsSolutions-DOC3', reason: 'This is a demo project, Secrets Manager would be used to store credentials in a production environment' },
+  { id: 'AwsSolutions-DOC4', reason: 'This is a demo project, reasonable backup retention periods would be configured in a production environment' },
+  { id: 'AwsSolutions-DOC5', reason: 'This is a demo project, necessary log exports would be enabled in a production environment' },
+  // S3 related rule suppressions
+  { id: 'AwsSolutions-S1', reason: 'This is a demo project, server access logs would be enabled in a production environment' },
+  { id: 'AwsSolutions-S10', reason: 'This is a demo project, SSL connections would be required in a production environment' },
+  // API Gateway related rule suppressions
+  { id: 'AwsSolutions-APIG1', reason: 'This is a demo project, API access logs would be enabled in a production environment' },
+  { id: 'AwsSolutions-APIG2', reason: 'This is a demo project, request validation would be enabled in a production environment' },
+  { id: 'AwsSolutions-APIG3', reason: 'This is a demo project, WAF would be associated in a production environment' },
+  { id: 'AwsSolutions-APIG4', reason: 'This is a demo project, authorization would be implemented in a production environment' },
+  { id: 'AwsSolutions-COG4', reason: 'This is a demo project, Cognito user pool authorizers would be used in a production environment' },
+  // CloudFront related rule suppressions
+  { id: 'AwsSolutions-CFR1', reason: 'This is a demo project, geographic restrictions would be added based on business requirements in a production environment' },
+  { id: 'AwsSolutions-CFR2', reason: 'This is a demo project, integration with AWS WAF would be implemented in a production environment' },
+  { id: 'AwsSolutions-CFR3', reason: 'This is a demo project, CloudFront access logs would be enabled in a production environment' },
+  { id: 'AwsSolutions-CFR4', reason: 'This is a demo project, more secure TLS versions would be used in a production environment' }
+  // Note: We have fixed AwsSolutions-CFR7, so we don't need to suppress it
 ]);
 
-// 为特定资源添加抑制规则
+// Add suppressions for specific resources
 NagSuppressions.addResourceSuppressions(stack, [
-  // VPC资源抑制
+  // VPC resource suppressions
   {
     id: 'AwsSolutions-VPC7',
-    reason: '这是一个演示项目，在生产环境中会启用VPC流日志',
+    reason: 'This is a demo project, VPC flow logs would be enabled in a production environment',
     appliesTo: ['Resource::VideoSearchVPC']
   },
-  // DocumentDB资源抑制
+  // DocumentDB resource suppressions
   {
     id: 'AwsSolutions-DOC2',
-    reason: '这是一个演示项目，在生产环境中会使用非默认端口',
+    reason: 'This is a demo project, non-default ports would be used in a production environment',
     appliesTo: ['Resource::VideoDataCluster']
   },
   {
     id: 'AwsSolutions-DOC3',
-    reason: '这是一个演示项目，在生产环境中会使用Secrets Manager存储凭据',
+    reason: 'This is a demo project, Secrets Manager would be used to store credentials in a production environment',
     appliesTo: ['Resource::VideoDataCluster']
   },
   {
     id: 'AwsSolutions-DOC4',
-    reason: '这是一个演示项目，在生产环境中会配置合理的备份保留期',
+    reason: 'This is a demo project, reasonable backup retention periods would be configured in a production environment',
     appliesTo: ['Resource::VideoDataCluster']
   },
   {
     id: 'AwsSolutions-DOC5',
-    reason: '这是一个演示项目，在生产环境中会启用必要的日志导出',
+    reason: 'This is a demo project, necessary log exports would be enabled in a production environment',
     appliesTo: [
       'LogExport::authenticate',
       'LogExport::createIndex',
       'LogExport::dropCollection'
     ]
   },
-  // S3资源抑制
+  // S3 resource suppressions
   {
     id: 'AwsSolutions-S1',
-    reason: '这是一个演示项目，在生产环境中会启用服务器访问日志',
+    reason: 'This is a demo project, server access logs would be enabled in a production environment',
     appliesTo: ['Resource::UnifiedBucket']
   },
   {
     id: 'AwsSolutions-S10',
-    reason: '这是一个演示项目，在生产环境中会要求使用SSL连接',
+    reason: 'This is a demo project, SSL connections would be required in a production environment',
     appliesTo: ['Resource::UnifiedBucket', 'Resource::UnifiedBucket/Policy/Resource']
   },
-  // API Gateway资源抑制
+  // API Gateway resource suppressions
   {
     id: 'AwsSolutions-APIG1',
-    reason: '这是一个演示项目，在生产环境中会启用API访问日志',
+    reason: 'This is a demo project, API access logs would be enabled in a production environment',
     appliesTo: ['Resource::VideoSearchApi/DeploymentStage.prod/Resource']
   },
   {
     id: 'AwsSolutions-APIG2',
-    reason: '这是一个演示项目，在生产环境中会启用请求验证',
+    reason: 'This is a demo project, request validation would be enabled in a production environment',
     appliesTo: ['Resource::VideoSearchApi/Resource']
   },
   {
     id: 'AwsSolutions-APIG3',
-    reason: '这是一个演示项目，在生产环境中会关联WAF',
+    reason: 'This is a demo project, WAF would be associated in a production environment',
     appliesTo: ['Resource::VideoSearchApi/DeploymentStage.prod/Resource']
   },
   {
     id: 'AwsSolutions-APIG4',
-    reason: '这是一个演示项目，在生产环境中会实现授权',
+    reason: 'This is a demo project, authorization would be implemented in a production environment',
     appliesTo: ['Resource::VideoSearchApi/Default/search/POST/Resource']
   },
   {
     id: 'AwsSolutions-COG4',
-    reason: '这是一个演示项目，在生产环境中会使用Cognito用户池授权器',
+    reason: 'This is a demo project, Cognito user pool authorizers would be used in a production environment',
     appliesTo: ['Resource::VideoSearchApi/Default/search/POST/Resource']
   },
-  // CloudFront资源抑制
+  // CloudFront resource suppressions
   {
     id: 'AwsSolutions-CFR1',
-    reason: '这是一个演示项目，在生产环境中会根据业务需求添加地理限制',
+    reason: 'This is a demo project, geographic restrictions would be added based on business requirements in a production environment',
     appliesTo: ['Resource::FrontendDistribution']
   },
   {
     id: 'AwsSolutions-CFR2',
-    reason: '这是一个演示项目，在生产环境中会与AWS WAF集成',
+    reason: 'This is a demo project, integration with AWS WAF would be implemented in a production environment',
     appliesTo: ['Resource::FrontendDistribution']
   },
   {
     id: 'AwsSolutions-CFR3',
-    reason: '这是一个演示项目，在生产环境中会启用CloudFront访问日志',
+    reason: 'This is a demo project, CloudFront access logs would be enabled in a production environment',
     appliesTo: ['Resource::FrontendDistribution']
   },
   {
     id: 'AwsSolutions-CFR4',
-    reason: '这是一个演示项目，在生产环境中会使用更安全的TLS版本',
+    reason: 'This is a demo project, more secure TLS versions would be used in a production environment',
     appliesTo: ['Resource::FrontendDistribution']
   }
-  // 注意：我们已经修复了 AwsSolutions-CFR7，所以不需要抑制它
+  // Note: We have fixed AwsSolutions-CFR7, so we don't need to suppress it
 ], true);
 
-// 输出当前使用的区域和堆栈名称，便于调试
+// Output the current region and stack name being used, for debugging purposes
 console.log(`Deploying stack ${stackName} to region: ${region}`);
