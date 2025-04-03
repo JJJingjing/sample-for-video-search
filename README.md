@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 =======
 # 语言选择 / Language Selection
 - [中文](#中文说明)
