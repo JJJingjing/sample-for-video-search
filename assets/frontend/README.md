@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 视频搜索前端
 
 这是一个简单的视频搜索前端应用，用于连接 API Gateway 和 CloudFront 资源。
@@ -25,3 +26,32 @@
 2. 选择搜索模式（文本搜索或场景搜索）
 3. 点击搜索按钮
 4. 查看返回的视频结果
+=======
+# Video Search Frontend
+
+This is a simple video search frontend application used to connect to API Gateway and CloudFront resources.
+
+## Features
+
+- Supports two search modes: text search and scene search
+- Displays video search results, including video clips and related text
+- Automatically positions videos to relevant timestamps
+- Displays timestamp information
+
+## File Structure
+
+- `index.html` - Main page
+- `app.js` - Application logic
+- `config.js` - Configuration file (will be replaced during the CDK deployment process)
+
+## Deployment Instructions
+
+This frontend is integrated into the CDK stack and will be automatically deployed when deploying the CDK stack.
+
+## Usage
+
+1. Enter keywords in the search box
+2. Select the search mode (text search or scene search)
+3. Click the search button
+4. View the returned video results
+>>>>>>> dev

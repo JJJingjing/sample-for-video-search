@@ -1,0 +1,26 @@
+# Sensitive files
+*.env
+.env*
+.env.local
+.env.*.local
+
+# Build output
+assets/lambda-layer/python/
+cdk.out/
+.DS_Store
+node_modules/
+*.zip
+dist/
+
+# IDE files
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock

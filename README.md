@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+# 语言选择 / Language Selection
+- [中文](#中文说明)
+- [English](README.en.md)
+
+>>>>>>> dev
 # 视频搜索应用 (sample-for-video-search)
 
 这是一个基于 AWS CDK 构建的视频搜索应用，使用 Amazon Bedrock 和 DocumentDB 实现视频内容的智能搜索功能。该应用允许用户通过文本描述或场景描述搜索视频内容，并精确定位到相关时间点。
@@ -64,7 +71,11 @@ which python  # 应显示虚拟环境中的 Python 路径
 
 ```bash
 git clone <repository-url>
+<<<<<<< HEAD
 cd VideoSearchStack123
+=======
+cd sample-for-video-search
+>>>>>>> dev
 ```
 
 ### 3. 安装依赖
