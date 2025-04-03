@@ -100,7 +100,7 @@ cdk bootstrap
 ### 6. Deploy the Stack
 
 ```bash
-cdk deploy
+cdk deploy --region us-west-2
 ```
 
 After deployment is complete, CDK will output the following information:

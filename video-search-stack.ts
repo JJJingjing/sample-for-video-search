@@ -108,6 +108,7 @@ export class VideoSearchStack extends cdk.Stack {
       enforceSSL: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
+      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_PREFERRED, // Enable ACL access
       lifecycleRules: [
         {
           expiration: cdk.Duration.days(90), // Retain logs for 90 days
