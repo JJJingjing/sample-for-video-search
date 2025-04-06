@@ -33,12 +33,19 @@ async function performSearch() {
 
     // Show loading state
     loadingElement.style.display = 'block';
-    resultsContainer.innerHTML = '';
+    resultsContainer.textContent = ''; // Fix: Use textContent instead of innerHTML
 
     try {
         console.log(`Performing search: query="${query}", mode=${mode}`);
         
-        const response = await fetch(`${window.CONFIG.API_ENDPOINT}/search`, {
+        // Use CONFIG object for API endpoint
+        const apiEndpoint = window.CONFIG ? window.CONFIG.API_ENDPOINT : '';
+        if (!apiEndpoint) {
+            throw new Error('API endpoint configuration is missing');
+        }
+        console.log('Using API endpoint:', apiEndpoint);
+        
+        const response = await fetch(`${apiEndpoint}/search`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
