@@ -93,14 +93,22 @@ aws configure
 
 ### 5. Bootstrap CDK Environment (First time using CDK)
 
+You need to provide a password parameter for DocumentDB:
+
 ```bash
-cdk bootstrap
+cdk bootstrap --context dbPassword=your_secure_password
 ```
 
 ### 6. Deploy the Stack
 
+When deploying, you need to provide a username and password for DocumentDB:
+
 ```bash
-cdk deploy --region us-west-2
+# Use default username 'dbadmin' and custom password
+cdk deploy --context dbPassword=your_secure_password
+
+# Or customize both username and password (Note: 'admin' is a reserved word and cannot be used as username)
+cdk deploy --context dbUsername=your_username --context dbPassword=your_secure_password
 ```
 
 After deployment is complete, CDK will output the following information:

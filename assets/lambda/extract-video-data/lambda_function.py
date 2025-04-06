@@ -261,8 +261,8 @@ class VideoDataProcessor:
             if not mongodb_uri:
                 # 如果没有设置MONGODB_URI，尝试使用其他环境变量构建
                 db_endpoint = os.environ.get('DB_ENDPOINT')
-                db_username = os.environ.get('DB_USERNAME', 'username123')
-                db_password = os.environ.get('DB_PASSWORD', 'Password123')
+                db_username = os.environ.get('DB_USERNAME')
+                db_password = os.environ.get('DB_PASSWORD')
                 db_port = os.environ.get('DB_PORT', '27017')
                 
                 if db_endpoint:

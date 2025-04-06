@@ -19,9 +19,9 @@ def lambda_handler(event, context):
     
     for attempt in range(max_retries):
         try:
-            # 硬编码的连接信息
-            username = 'username123'
-            password = 'Password123'
+            # Get connection information from environment variables
+            username = os.environ.get('DB_USERNAME')
+            password = os.environ.get('DB_PASSWORD')
             db_endpoint = os.environ.get('DB_ENDPOINT')
             db_port = os.environ.get('DB_PORT', '27017')
             db_name = os.environ.get('DB_NAME', 'VideoData')

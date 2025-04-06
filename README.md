@@ -93,14 +93,22 @@ aws configure
 
 ### 5. 引导 CDK 环境（首次使用 CDK 时）
 
+需要提供 DocumentDB 的密码参数：
+
 ```bash
-cdk bootstrap
+cdk bootstrap --context dbPassword=your_secure_password
 ```
 
 ### 6. 部署堆栈
 
+部署时需要提供 DocumentDB 的用户名和密码：
+
 ```bash
-cdk deploy
+# 使用默认用户名 'dbadmin' 和自定义密码
+cdk deploy --context dbPassword=your_secure_password
+
+# 或者同时自定义用户名和密码（注意：'admin' 是保留字，不能用作用户名）
+cdk deploy --context dbUsername=your_username --context dbPassword=your_secure_password
 ```
 
 部署完成后，CDK 将输出以下信息：
