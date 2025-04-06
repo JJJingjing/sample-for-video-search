@@ -79,7 +79,11 @@ async function performSearch() {
         displayResults(results);
     } catch (error) {
         console.error('Search error:', error);
-        resultsContainer.innerHTML = `<p>Error during search: ${error.message}</p>`;
+        // Fix XSS vulnerability: Replace innerHTML with DOM API
+        resultsContainer.textContent = ''; // Clear container
+        const errorParagraph = document.createElement('p');
+        errorParagraph.textContent = `Error during search: ${error.message}`;
+        resultsContainer.appendChild(errorParagraph);
     } finally {
         loadingElement.style.display = 'none';
     }
@@ -88,12 +92,16 @@ async function performSearch() {
 // Display results
 function displayResults(results) {
     if (!Array.isArray(results) || results.length === 0) {
-        resultsContainer.innerHTML = '<p>No matching results found</p>';
+        // Fix XSS vulnerability: Replace innerHTML with DOM API
+        resultsContainer.textContent = ''; // Clear container
+        const nothingFoundParagraph = document.createElement('p');
+        nothingFoundParagraph.textContent = 'No matching results found';
+        resultsContainer.appendChild(nothingFoundParagraph);
         return;
     }
 
     console.log('Processing results:', results);
-    resultsContainer.innerHTML = '';
+    resultsContainer.textContent = ''; // Clear container using textContent
     
     // Sort results by relevance score from high to low
     results.sort((a, b) => {
@@ -126,28 +134,64 @@ function displayResults(results) {
         const card = document.createElement('div');
         card.className = 'video-card';
         
-        card.innerHTML = `
-            <video controls>
-                <source src="${videoUrl}" type="video/mp4">
-                Your browser does not support the video tag
-            </video>
-            <div class="video-info">
-                <div class="video-title">${videoName}</div>
-                <div class="video-timestamp">Timestamp: ${formatTimestamp(timestamp)} - ${formatTimestamp(endTimestamp)}</div>
-                <div class="video-score">Relevance: ${score}</div>
-                <p>${text}</p>
-            </div>
-        `;
+        // Fix XSS vulnerability: Replace innerHTML with DOM API
+        // Create video element
+        const videoElement = document.createElement('video');
+        videoElement.controls = true;
+        
+        // Create source element
+        const sourceElement = document.createElement('source');
+        sourceElement.src = videoUrl;
+        sourceElement.type = 'video/mp4';
+        
+        // Add fallback text
+        const fallbackText = document.createTextNode('Your browser does not support the video tag');
+        
+        // Assemble video element
+        videoElement.appendChild(sourceElement);
+        videoElement.appendChild(fallbackText);
+        
+        // Create info container
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'video-info';
+        
+        // Create title
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'video-title';
+        titleDiv.textContent = videoName;
+        
+        // Create timestamp
+        const timestampDiv = document.createElement('div');
+        timestampDiv.className = 'video-timestamp';
+        timestampDiv.textContent = `Timestamp: ${formatTimestamp(timestamp)} - ${formatTimestamp(endTimestamp)}`;
+        
+        // Create score
+        const scoreDiv = document.createElement('div');
+        scoreDiv.className = 'video-score';
+        scoreDiv.textContent = `Relevance: ${score}`;
+        
+        // Create text paragraph
+        const textP = document.createElement('p');
+        textP.textContent = text;
+        
+        // Assemble info container
+        infoDiv.appendChild(titleDiv);
+        infoDiv.appendChild(timestampDiv);
+        infoDiv.appendChild(scoreDiv);
+        infoDiv.appendChild(textP);
+        
+        // Add elements to card
+        card.appendChild(videoElement);
+        card.appendChild(infoDiv);
         
         // Set video start time
-        const video = card.querySelector('video');
-        video.addEventListener('loadedmetadata', function() {
+        videoElement.addEventListener('loadedmetadata', function() {
             // Ensure timestamp is a valid number and convert to seconds
             if (timestamp !== undefined && timestamp !== null && !isNaN(timestamp)) {
                 const seconds = timestamp / 1000;
                 if (isFinite(seconds) && seconds >= 0) {
                     console.log(`Setting video ${videoName} start time to ${seconds} seconds`);
-                    video.currentTime = seconds;
+                    videoElement.currentTime = seconds;
                 }
             }
         });
