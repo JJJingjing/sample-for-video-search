@@ -231,7 +231,8 @@ export class VideoSearchStack extends cdk.Stack {
     unifiedBucket.addToResourcePolicy(bucketPolicy);
 
     // Get username and password from context or use defaults
-    const dbUsername = this.node.tryGetContext('dbUsername') || 'admin';
+    // Note: 'admin' is a reserved word in DocumentDB and cannot be used as username
+    const dbUsername = this.node.tryGetContext('dbUsername') || 'dbadmin';
     const dbPassword = this.node.tryGetContext('dbPassword');
     
     // Validate that password is provided
