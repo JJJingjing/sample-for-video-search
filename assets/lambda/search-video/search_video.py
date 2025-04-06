@@ -14,9 +14,9 @@ class VideoSearch:
     def __init__(self):
         """Initialize the VideoSearch class with MongoDB connection and Bedrock client"""
         try:
-            # Hardcoded connection information
-            username = 'username123'
-            password = 'Password123'
+            # Get connection information from environment variables
+            username = os.environ.get('DB_USERNAME')
+            password = os.environ.get('DB_PASSWORD')
             db_endpoint = os.environ.get('DB_ENDPOINT')
             db_port = os.environ.get('DB_PORT', '27017')
             db_name = os.environ.get('DB_NAME', 'VideoData')

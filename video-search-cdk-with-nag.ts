@@ -55,8 +55,9 @@ NagSuppressions.addStackSuppressions(stack, [
   { id: 'AwsSolutions-CFR1', reason: 'This is a demo project, geographic restrictions would be added based on business requirements in a production environment' },
   { id: 'AwsSolutions-CFR2', reason: 'This is a demo project, integration with AWS WAF would be implemented in a production environment' },
   { id: 'AwsSolutions-CFR3', reason: 'This is a demo project, CloudFront access logs would be enabled in a production environment' },
-  { id: 'AwsSolutions-CFR4', reason: 'This is a demo project, more secure TLS versions would be used in a production environment' }
-  // Note: We have fixed AwsSolutions-CFR7, so we don't need to suppress it
+  { id: 'AwsSolutions-CFR4', reason: 'This is a demo project, more secure TLS versions would be used in a production environment' },
+  // Lambda related rule suppressions
+  { id: 'AwsSolutions-L1', reason: 'This is a demo project, latest runtime versions would be used in a production environment' }
 ]);
 
 // Add suppressions for specific resources
@@ -96,7 +97,7 @@ NagSuppressions.addResourceSuppressions(stack, [
   {
     id: 'AwsSolutions-S1',
     reason: 'This is a demo project, server access logs would be enabled in a production environment',
-    appliesTo: ['Resource::UnifiedBucket']
+    appliesTo: ['Resource::UnifiedBucket', 'Resource::CloudFrontLogsBucket']
   },
   {
     id: 'AwsSolutions-S10',
@@ -149,8 +150,28 @@ NagSuppressions.addResourceSuppressions(stack, [
     id: 'AwsSolutions-CFR4',
     reason: 'This is a demo project, more secure TLS versions would be used in a production environment',
     appliesTo: ['Resource::FrontendDistribution']
+  },
+  // Lambda related rule suppressions
+  {
+    id: 'AwsSolutions-L1',
+    reason: 'This is a demo project, latest runtime versions would be used in a production environment',
+    appliesTo: [
+      'Resource::BDAProjectProviderframeworkonEventE9BF32C3',
+      'Resource::DbInitializerProviderframeworkonEvent13A4E169',
+      'Resource::CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiB2048MiB98A3C176',
+      'Resource::CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C512MiB1024MiB439D638D'
+    ]
+  },
+  // IAM related rule suppressions for specific resources
+  {
+    id: 'AwsSolutions-IAM5',
+    reason: 'This is a demo project, permissions would be more strictly limited in a production environment',
+    appliesTo: [
+      'Resource::VideoSearchLambdaRoleDefaultPolicy21938B05',
+      'Resource::CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiB2048MiBServiceRoleDefaultPolicy0E2BB108',
+      'Resource::CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C512MiB1024MiBServiceRoleDefaultPolicy5878A191'
+    ]
   }
-  // Note: We have fixed AwsSolutions-CFR7, so we don't need to suppress it
 ], true);
 
 // Output the current region and stack name being used, for debugging purposes

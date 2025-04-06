@@ -1,0 +1,8 @@
+---
+exclude_dirs:
+  - assets/lambda-layer/python
+  - cdk.out
+  - node_modules
+skips:
+  - B324
+  - B303

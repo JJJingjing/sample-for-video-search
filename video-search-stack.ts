@@ -230,11 +230,20 @@ export class VideoSearchStack extends cdk.Stack {
     // Add policy to the bucket
     unifiedBucket.addToResourcePolicy(bucketPolicy);
 
+    // Get username and password from context or use defaults
+    const dbUsername = this.node.tryGetContext('dbUsername') || 'admin';
+    const dbPassword = this.node.tryGetContext('dbPassword');
+    
+    // Validate that password is provided
+    if (!dbPassword) {
+      throw new Error('Database password must be provided. Use --context dbPassword=YOUR_PASSWORD parameter');
+    }
+
     // Create DocumentDB cluster
     const docdbCluster = new docdb.DatabaseCluster(this, 'VideoDataCluster', {
       masterUser: {
-        username: 'username123',
-        password: cdk.SecretValue.unsafePlainText('Password123'),
+        username: dbUsername,
+        password: cdk.SecretValue.unsafePlainText(dbPassword),
       },
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
       instances: 1, // Reduce instance count to speed up initialization
@@ -313,7 +322,7 @@ export class VideoSearchStack extends cdk.Stack {
     );
 
     // 构建MongoDB连接URI
-    const mongoDbUri = `mongodb://username123:Password123@${docdbCluster.clusterEndpoint.hostname}:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false&ssl=false`;
+    const mongoDbUri = `mongodb://${dbUsername}:${dbPassword}@${docdbCluster.clusterEndpoint.hostname}:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false&ssl=false`;
 
     // 创建Lambda Layer
     const pythonLayer = new lambda.LayerVersion(this, 'PythonDependenciesLayer', {
@@ -338,8 +347,8 @@ export class VideoSearchStack extends cdk.Stack {
       environment: {
         'DB_ENDPOINT': docdbCluster.clusterEndpoint.hostname,
         'DB_PORT': '27017',
-        'DB_USERNAME': 'username123',
-        'DB_PASSWORD': 'Password123',
+        'DB_USERNAME': dbUsername,
+        'DB_PASSWORD': dbPassword,
         'DB_NAME': 'VideoData',
         'COLLECTION_NAME': 'videodata',
         'DEPLOY_REGION': this.region, // 使用 DEPLOY_REGION 而不是 AWS_REGION
@@ -364,8 +373,8 @@ export class VideoSearchStack extends cdk.Stack {
       environment: {
         'DB_ENDPOINT': docdbCluster.clusterEndpoint.hostname,
         'DB_PORT': '27017',
-        'DB_USERNAME': 'username123',
-        'DB_PASSWORD': 'Password123',
+        'DB_USERNAME': dbUsername,
+        'DB_PASSWORD': dbPassword,
         'DB_NAME': 'VideoData',
         'COLLECTION_NAME': 'videodata',
         'DEPLOY_REGION': this.region,
@@ -444,8 +453,8 @@ export class VideoSearchStack extends cdk.Stack {
       environment: {
         'DB_ENDPOINT': docdbCluster.clusterEndpoint.hostname,
         'DB_PORT': '27017',
-        'DB_USERNAME': 'username123',
-        'DB_PASSWORD': 'Password123',
+        'DB_USERNAME': dbUsername,
+        'DB_PASSWORD': dbPassword,
         'DB_NAME': 'VideoData',
         'COLLECTION_NAME': 'videodata',
         'DEPLOY_REGION': this.region, // 使用 DEPLOY_REGION 而不是 AWS_REGION

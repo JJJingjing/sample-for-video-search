@@ -99,8 +99,14 @@ cdk bootstrap
 
 ### 6. Deploy the Stack
 
+When deploying, you need to provide a username and password for DocumentDB:
+
 ```bash
-cdk deploy --region us-west-2
+# Use default username 'admin' and custom password
+cdk deploy --context dbPassword=your_secure_password
+
+# Or customize both username and password
+cdk deploy --context dbUsername=your_username --context dbPassword=your_secure_password
 ```
 
 After deployment is complete, CDK will output the following information:

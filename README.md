@@ -99,8 +99,14 @@ cdk bootstrap
 
 ### 6. 部署堆栈
 
+部署时需要提供 DocumentDB 的用户名和密码：
+
 ```bash
-cdk deploy
+# 使用默认用户名 'admin' 和自定义密码
+cdk deploy --context dbPassword=your_secure_password
+
+# 或者同时自定义用户名和密码
+cdk deploy --context dbUsername=your_username --context dbPassword=your_secure_password
 ```
 
 部署完成后，CDK 将输出以下信息：
