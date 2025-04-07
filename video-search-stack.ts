@@ -144,7 +144,7 @@ export class VideoSearchStack extends cdk.Stack {
       additionalBehaviors: {
         'video-input/*': {
           origin: new origins.S3Origin(unifiedBucket, {
-            // 移除 originAccessIdentity
+            // Remove originAccessIdentity
           }),
           viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
@@ -162,7 +162,7 @@ export class VideoSearchStack extends cdk.Stack {
         },
         'video-output/*': {
           origin: new origins.S3Origin(unifiedBucket, {
-            // 移除 originAccessIdentity
+            // Remove originAccessIdentity
           }),
           viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
@@ -322,17 +322,17 @@ export class VideoSearchStack extends cdk.Stack {
       this, 'DocDBSecret', '/video-search/docdb/masteruser'
     );
 
-    // 构建MongoDB连接URI
+    // Build MongoDB connection URI
     const mongoDbUri = `mongodb://${dbUsername}:${dbPassword}@${docdbCluster.clusterEndpoint.hostname}:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false&ssl=false`;
 
-    // 创建Lambda Layer
+    // Create Lambda Layer
     const pythonLayer = new lambda.LayerVersion(this, 'PythonDependenciesLayer', {
       code: lambda.Code.fromAsset(path.join(__dirname, 'assets/lambda-layer')),
-      compatibleRuntimes: [lambda.Runtime.PYTHON_3_11],  // 改为 Python 3.11
+      compatibleRuntimes: [lambda.Runtime.PYTHON_3_11],  // Change to Python 3.11
       description: 'Python dependencies for Lambda functions',
     });
 
-    // 创建Lambda函数 - 搜索视频
+    // Create Lambda function - Search video
     const searchVideoFunction = new lambda.Function(this, 'SearchVideoFunction', {
       runtime: lambda.Runtime.PYTHON_3_11,
       handler: 'search_video.lambda_handler',
@@ -340,7 +340,7 @@ export class VideoSearchStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
       vpc: vpc,
-      role: lambdaRole, // 使用已定义的具有Bedrock权限的角色
+      role: lambdaRole, // Use the defined role with Bedrock permissions
       securityGroups: [lambdaSG],
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
@@ -352,13 +352,13 @@ export class VideoSearchStack extends cdk.Stack {
         'DB_PASSWORD': dbPassword,
         'DB_NAME': 'VideoData',
         'COLLECTION_NAME': 'videodata',
-        'DEPLOY_REGION': this.region, // 使用 DEPLOY_REGION 而不是 AWS_REGION
-        'LOG_LEVEL': 'DEBUG',  // 设置日志级别
+        'DEPLOY_REGION': this.region, // Use DEPLOY_REGION instead of AWS_REGION
+        'LOG_LEVEL': 'DEBUG',  // Set log level
       },
-      layers: [pythonLayer], // 添加Layer
+      layers: [pythonLayer], // Add Layer
     });
 
-    // 创建Lambda函数 - 提取视频数据
+    // Create Lambda function - Extract video data
     const extractVideoDataFunction = new lambda.Function(this, 'ExtractVideoDataFunction', {
       runtime: lambda.Runtime.PYTHON_3_11,
       handler: 'lambda_function.lambda_handler',
@@ -366,7 +366,7 @@ export class VideoSearchStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(300),
       memorySize: 1024,
       vpc: vpc,
-      role: lambdaRole, // 使用已定义的具有Bedrock权限的角色
+      role: lambdaRole, // Use the defined role with Bedrock permissions
       securityGroups: [lambdaSG],
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
@@ -380,27 +380,27 @@ export class VideoSearchStack extends cdk.Stack {
         'COLLECTION_NAME': 'videodata',
         'DEPLOY_REGION': this.region,
         'LOG_LEVEL': 'DEBUG',
-        'BUCKET_NAME': unifiedBucket.bucketName, // 使用统一存储桶
+        'BUCKET_NAME': unifiedBucket.bucketName, // Use unified bucket
       },
-      layers: [pythonLayer], // 添加Layer
+      layers: [pythonLayer], // Add Layer
     });
 
-    // 创建 BDA 项目的 Lambda 函数
+    // Create Lambda function for BDA project
     const createBDAProjectFunction = new lambda.Function(this, 'CreateBDAProjectFunction', {
       runtime: lambda.Runtime.PYTHON_3_11,
       handler: 'create_bda_project.lambda_handler',
       code: lambda.Code.fromAsset(path.join(__dirname, 'assets/lambda/create-bda-project')),
       timeout: cdk.Duration.seconds(60),
       memorySize: 256,
-      role: lambdaRole, // 使用已定义的具有Bedrock权限的角色
+      role: lambdaRole, // Use the defined role with Bedrock permissions
       environment: {
         'PROJECT_NAME': 'VideoDataProject',
         'DEPLOY_REGION': this.region,
       },
-      layers: [pythonLayer], // 添加Layer
+      layers: [pythonLayer], // Add Layer
     });
 
-    // 创建自定义资源来确保在部署时创建 BDA 项目
+    // Create custom resource to ensure BDA project is created during deployment
     const bdaProjectProvider = new cr.Provider(this, 'BDAProjectProvider', {
       onEventHandler: createBDAProjectFunction,
     });
@@ -408,45 +408,45 @@ export class VideoSearchStack extends cdk.Stack {
     new cdk.CustomResource(this, 'BDAProject', {
       serviceToken: bdaProjectProvider.serviceToken,
       properties: {
-        // 添加时间戳属性，确保每次部署都会触发
+        // Add timestamp property to ensure trigger on each deployment
         Timestamp: new Date().toISOString(),
       },
     });
 
-    // 创建Lambda函数 - 触发视频数据自动化
+    // Create Lambda function - Trigger video data automation
     const triggerVideoDataAutomationFunction = new lambda.Function(this, 'TriggerVideoDataAutomationFunction', {
       runtime: lambda.Runtime.PYTHON_3_11,
       handler: 'index.lambda_handler',
       code: lambda.Code.fromAsset(path.join(__dirname, 'assets/lambda/trigger-video-data-automation')),
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,
-      role: lambdaRole, // 使用已定义的具有Bedrock权限的角色
+      role: lambdaRole, // Use the defined role with Bedrock permissions
       environment: {
         'BDA_RUNTIME_ENDPOINT': `https://bedrock-data-automation-runtime.${this.region}.amazonaws.com`,
         'DATA_PROJECT_NAME': 'VideoDataProject',
-        'TARGET_BUCKET_NAME': unifiedBucket.bucketName, // 使用统一存储桶
+        'TARGET_BUCKET_NAME': unifiedBucket.bucketName, // Use unified bucket
         'DEPLOY_REGION': this.region,
       },
-      layers: [pythonLayer], // 添加Layer
+      layers: [pythonLayer], // Add Layer
     });
 
-    // 授予S3读写权限
+    // Grant S3 read/write permissions
     unifiedBucket.grantRead(triggerVideoDataAutomationFunction);
     unifiedBucket.grantReadWrite(extractVideoDataFunction);
 
-    // 允许DocumentDB密钥访问
+    // Allow DocumentDB secret access
     dbSecret.grantRead(searchVideoFunction);
     dbSecret.grantRead(extractVideoDataFunction);
 
-    // 创建初始化数据库的Lambda函数
+    // Create Lambda function to initialize database
     const initDbFunction = new lambda.Function(this, 'InitDbFunction', {
       runtime: lambda.Runtime.PYTHON_3_11,
       handler: 'init_db.lambda_handler',
       code: lambda.Code.fromAsset(path.join(__dirname, 'assets/lambda/init-db')),
-      timeout: cdk.Duration.seconds(600), // 增加到 10 分钟
+      timeout: cdk.Duration.seconds(600), // Increase to 10 minutes
       memorySize: 256,
       vpc: vpc,
-      role: lambdaRole, // 使用已定义的具有Bedrock权限的角色
+      role: lambdaRole, // Use the defined role with Bedrock permissions
       securityGroups: [lambdaSG],
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
@@ -458,36 +458,36 @@ export class VideoSearchStack extends cdk.Stack {
         'DB_PASSWORD': dbPassword,
         'DB_NAME': 'VideoData',
         'COLLECTION_NAME': 'videodata',
-        'DEPLOY_REGION': this.region, // 使用 DEPLOY_REGION 而不是 AWS_REGION
-        'LOG_LEVEL': 'DEBUG',  // 设置日志级别
+        'DEPLOY_REGION': this.region, // Use DEPLOY_REGION instead of AWS_REGION
+        'LOG_LEVEL': 'DEBUG',  // Set log level
       },
-      layers: [pythonLayer], // 添加Layer
+      layers: [pythonLayer], // Add Layer
     });
 
-    // 授予DocumentDB密钥访问权限
+    // Grant DocumentDB secret access permissions
     dbSecret.grantRead(initDbFunction);
 
-    // 创建自定义资源来确保在部署时运行初始化
+    // Create custom resource to ensure initialization runs during deployment
     const dbInitializerProvider = new cr.Provider(this, 'DbInitializerProvider', {
       onEventHandler: initDbFunction,
-      // 移除 totalTimeout 参数，因为我们没有提供 isCompleteHandler
+      // Remove totalTimeout parameter because we don't provide isCompleteHandler
     });
     
-    // 确保 Provider 在 DocumentDB 集群可用后才运行
+    // Ensure Provider runs only after DocumentDB cluster is available
     dbInitializerProvider.node.addDependency(docdbCluster);
     
     new cdk.CustomResource(this, 'DbInitializer', {
       serviceToken: dbInitializerProvider.serviceToken,
       properties: {
-        // 添加时间戳属性，确保每次部署都会触发
+        // Add timestamp property to ensure trigger on each deployment
         Timestamp: new Date().toISOString(),
       },
     });
 
-    // 创建API资源和方法
+    // Create API resources and methods
     const searchResource = api.root.addResource('search');
     
-    // 添加POST方法，集成Lambda函数
+    // Add POST method, integrate Lambda function
     searchResource.addMethod('POST', new apigateway.LambdaIntegration(searchVideoFunction, {
       proxy: true,
       integrationResponses: [
@@ -513,56 +513,56 @@ export class VideoSearchStack extends cdk.Stack {
       ]
     });
 
-    // 部署前端静态资源（不包括config.js）
+    // Deploy frontend static resources (excluding config.js)
     const frontendDeployment = new s3deploy.BucketDeployment(this, 'DeployFrontendStatic', {
       sources: [s3deploy.Source.asset(path.join(__dirname, 'assets/frontend'), {
-        exclude: ['config.js', 'update-cdk.md'] // 排除 config.js 和不需要的文档文件
+        exclude: ['config.js', 'update-cdk.md'] // Exclude config.js and unnecessary documentation files
       })],
       destinationBucket: unifiedBucket,
       destinationKeyPrefix: 'frontend',
-      prune: true, // 删除目标中不存在于源中的文件
-      retainOnDelete: false, // 删除堆栈时删除文件
-      distribution, // 添加 CloudFront 分发
-      distributionPaths: ['/*'], // 使所有路径的缓存失效
-      memoryLimit: 1024, // 增加到 1024MB
+      prune: true, // Delete files in the destination that don't exist in the source
+      retainOnDelete: false, // Delete files when stack is deleted
+      distribution, // Add CloudFront distribution
+      distributionPaths: ['/*'], // Invalidate all paths in cache
+      memoryLimit: 1024, // Increase to 1024MB
       useEfs: false,
       vpc: undefined,
-      ephemeralStorageSize: cdk.Size.mebibytes(2048), // 增加到 2GB
+      ephemeralStorageSize: cdk.Size.mebibytes(2048), // Increase to 2GB
     });
 
-    // 确保前端静态资源部署在S3存储桶创建后执行
+    // Ensure frontend static resources deployment executes after S3 bucket creation
     frontendDeployment.node.addDependency(unifiedBucket);
     
-    // 确保前端部署在API Gateway和CloudFront创建后执行
+    // Ensure frontend deployment executes after API Gateway and CloudFront creation
     frontendDeployment.node.addDependency(api);
     frontendDeployment.node.addDependency(distribution);
 
-    // 创建一个包含API Gateway URL和CloudFront URL的config.js文件
+    // Create a config.js file containing API Gateway URL and CloudFront URL
     const configFileContent = `window.CONFIG = {
   API_ENDPOINT: 'https://${api.restApiId}.execute-api.${this.region}.amazonaws.com/prod',
   CLOUDFRONT_URL: 'https://${distribution.distributionDomainName}',
   VIDEO_BASE_URL: 'https://${distribution.distributionDomainName}/video-input'
 };`;
 
-    // 部署配置文件（在API Gateway和CloudFront创建后）
+    // Deploy configuration file (after API Gateway and CloudFront creation)
     const configDeployment = new s3deploy.BucketDeployment(this, 'DeployFrontendConfig', {
       sources: [s3deploy.Source.data('config.js', configFileContent)],
       destinationBucket: unifiedBucket,
       destinationKeyPrefix: 'frontend',
       distribution,
-      distributionPaths: ['/config.js'], // 只使config.js缓存失效
-      memoryLimit: 512, // 增加内存限制
+      distributionPaths: ['/config.js'], // Only invalidate config.js cache
+      memoryLimit: 512, // Increase memory limit
       useEfs: false,
       vpc: undefined,
-      ephemeralStorageSize: cdk.Size.mebibytes(1024), // 增加临时存储空间
-      prune: false, // 关键修改：不删除其他文件
+      ephemeralStorageSize: cdk.Size.mebibytes(1024), // Increase ephemeral storage
+      prune: false, // Key modification: do not delete other files
     });
     
-    // 确保配置文件部署在API Gateway和CloudFront创建后执行
+    // Ensure configuration file deployment executes after API Gateway and CloudFront creation
     configDeployment.node.addDependency(api);
     configDeployment.node.addDependency(distribution);
 
-    // 创建video-input和video-output文件夹
+    // Create video-input and video-output folders
     const videoInputFolder = new s3deploy.BucketDeployment(this, 'CreateVideoFolders', {
       sources: [s3deploy.Source.data('video-input-test', '')],
       destinationBucket: unifiedBucket,
@@ -583,13 +583,13 @@ export class VideoSearchStack extends cdk.Stack {
       ephemeralStorageSize: cdk.Size.mebibytes(1024),
     });
     
-    // 输出CloudFront URL
+    // Output CloudFront URL
     new cdk.CfnOutput(this, 'FrontendURL', {
       value: `https://${distribution.distributionDomainName}`,
       description: 'URL for the frontend application',
     });
 
-    // 创建EventBridge规则 - 监听S3视频上传
+    // Create EventBridge rule - Monitor S3 video uploads
     const videoUploadRule = new events.Rule(this, 'VideoUploadRule', {
       eventPattern: {
         source: ['aws.s3'],
@@ -607,10 +607,10 @@ export class VideoSearchStack extends cdk.Stack {
       },
     });
 
-    // 添加Lambda目标
+    // Add Lambda target
     videoUploadRule.addTarget(new targets.LambdaFunction(triggerVideoDataAutomationFunction));
 
-    // 创建EventBridge规则 - 监听S3视频输出结果文件
+    // Create EventBridge rule - Monitor S3 video output result files
     const s3VideoDataExtractRule = new events.Rule(this, 'S3VideoDataExtractRule', {
       ruleName: 's3-video-data-extract',
       eventPattern: {
@@ -629,10 +629,10 @@ export class VideoSearchStack extends cdk.Stack {
       },
     });
 
-    // 添加Lambda目标
+    // Add Lambda target
     s3VideoDataExtractRule.addTarget(new targets.LambdaFunction(extractVideoDataFunction));
 
-    // 输出重要资源信息
+    // Output important resource information
     new cdk.CfnOutput(this, 'UnifiedBucketName', {
       value: unifiedBucket.bucketName,
       description: 'S3 bucket for video input, output, and frontend hosting',

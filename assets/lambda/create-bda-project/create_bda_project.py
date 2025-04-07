@@ -30,10 +30,10 @@ def lambda_handler(event, context):
         # Handle Delete event first
         if event['RequestType'] == 'Delete':
             try:
-                # 获取物理资源ID，这应该是创建时保存的项目ARN
+                # Get physical resource ID, which should be the project ARN saved during creation
                 physical_id = event.get('PhysicalResourceId')
                 
-                # 如果物理ID看起来像项目ARN，直接使用它
+                # If the physical ID looks like a project ARN, use it directly
                 if physical_id and physical_id.startswith('arn:aws:bedrock'):
                     project_arn = physical_id
                     logger.info(f"Using project ARN from PhysicalResourceId: {project_arn}")
@@ -45,7 +45,7 @@ def lambda_handler(event, context):
                         logger.info(f"Successfully deleted project with ARN: {project_arn}")
                     except Exception as e:
                         logger.error(f"Error deleting project with ARN {project_arn}: {str(e)}")
-                        # 返回成功以允许堆栈删除继续
+                        # Return success to allow stack deletion to continue
                         logger.info("Returning SUCCESS despite deletion error to allow stack deletion to continue")
                 else:
                     logger.info(f"No valid ARN found in PhysicalResourceId: {physical_id}")
@@ -55,7 +55,7 @@ def lambda_handler(event, context):
                 return True
             except Exception as e:
                 logger.error(f"Error in Delete handler: {str(e)}")
-                # 返回成功以允许堆栈删除继续
+                # Return success to allow stack deletion to continue
                 cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
                 return True
 
@@ -95,7 +95,7 @@ def lambda_handler(event, context):
                 'Region': region,
                 'ProjectExists': True,
                 'ProjectArn': project_arn
-            }, physicalResourceId=project_arn)  # 使用项目ARN作为物理资源ID
+            }, physicalResourceId=project_arn)  # Use project ARN as physical resource ID
                 
         except Exception as e:
             logger.error(f"Error creating project: {str(e)}")

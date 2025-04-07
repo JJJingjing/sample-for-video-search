@@ -15,7 +15,7 @@ import random, string
 BDA_RUNTIME_ENDPOINT = os.environ.get('BDA_RUNTIME_ENDPOINT', None)
 DATA_PROJECT_NAME = os.environ.get('DATA_PROJECT_NAME', None)
 TARGET_BUCKET_NAME = os.environ.get('TARGET_BUCKET_NAME', None)
-DEPLOY_REGION = os.environ.get('DEPLOY_REGION', 'us-east-1')  # 从环境变量获取区域
+DEPLOY_REGION = os.environ.get('DEPLOY_REGION', 'us-east-1')  # Get region from environment variable
 
 
 s3 = boto3.client("s3", region_name=DEPLOY_REGION)
