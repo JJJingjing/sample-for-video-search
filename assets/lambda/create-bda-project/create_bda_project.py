@@ -72,7 +72,7 @@ def lambda_handler(event, context):
                         'extraction': {
                             'category': {
                                 'state': 'ENABLED',
-                                'types': ['TEXT_DETECTION', 'TRANSCRIPT', 'LOGOS'],
+                                'types': ['TEXT_DETECTION', 'TRANSCRIPT', 'LOGOS', 'CONTENT_MODERATION'],
                             },
                             'boundingBox': {
                                 'state': 'ENABLED',
