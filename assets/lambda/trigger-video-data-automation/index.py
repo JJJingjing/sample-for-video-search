@@ -8,7 +8,7 @@ import json
 import uuid
 import os
 import boto3
-from bda_wrapper import invoke_insight_generation_async, bda_sdk, get_project_arn
+from bda_wrapper import invoke_insight_generation_async, get_project_arn
 import random, string
 
 
