@@ -1,3 +1,8 @@
+/**
+ * Copyright 2023-2025 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: MIT-0
+ */
+
 // DOM elements
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
